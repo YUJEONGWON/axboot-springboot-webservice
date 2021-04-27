@@ -1,6 +1,7 @@
 package edu.axboot.domain;
 
 import edu.axboot.domain.code.QCommonCode;
+import edu.axboot.domain.education.QYjGrid;
 import edu.axboot.domain.file.QCommonFile;
 import edu.axboot.domain.program.QProgram;
 import edu.axboot.domain.program.menu.QMenu;
@@ -14,6 +15,7 @@ import com.chequer.axboot.core.domain.base.AXBootJPAQueryDSLRepository;
 import java.io.Serializable;
 
 
+
 public class BaseService<T, ID extends Serializable> extends AXBootBaseService<T, ID> {
 
     protected QUserRole qUserRole = QUserRole.userRole;
@@ -24,7 +26,7 @@ public class BaseService<T, ID extends Serializable> extends AXBootBaseService<T
     protected QUserAuth qUserAuth = QUserAuth.userAuth;
     protected QMenu qMenu = QMenu.menu;
     protected QCommonFile qCommonFile = QCommonFile.commonFile;
-
+    protected QYjGrid qYjGrid = QYjGrid.yjGrid;
     protected AXBootJPAQueryDSLRepository<T, ID> repository;
 
     public BaseService() {

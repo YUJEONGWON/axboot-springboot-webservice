@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.axboot.domain.education.YjGridMapper">
+    <select id="selectBy" resultType="yjgrid" parameterType="yjgrid" statementType="PREPARED">
+        SELECT
+        ID AS id,
+        COMPANY_NM AS companyNm,
+        CEO AS ceo,
+        BIZNO AS bizno,
+        TEL AS tel,
+        ZIP AS zip,
+        ADDRESS AS address,
+        ADDRESS_DETAIL AS addressDetail,
+        EMAIL AS email,
+        REMARK AS remark,
+        USE_YN AS useYn
+        FROM
+        EDUCATION_YJ
+        <where>
+            <if test="companyNm != null and companyNm != ''">
+                AND COMPANY_NM LIKE '%' || #{companyNm} || '%'
+
+            </if>
+            <if test="ceo != null and ceo != ''">
+                AND CEO LIKE '%' ||  #{ceo} || '%'
+            </if>
+            <if test="bizno != null and bizno != ''">
+                AND BIZNO LIKE '%' ||  #{bizno} || '%'
+            </if>
+            <if test="useYn != null and useYn != ''">
+                AND USE_YN =  #{useYn}
+            </if>
+        </where>
+
+    </select>
+
+
+<!--
+    <select id="selectPage" resultType="yjgrid" statementType="PREPARED">
+        SELECT *
+        FROM EDUCATION_YJ
+        WHERE ROWNUM BETWEEN 1 AND 10
+                LIMIT 0, 10
+    </select>
+-->
+
+
+</mapper>

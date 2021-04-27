@@ -3,7 +3,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {
         axboot.ajax({
             type: "GET",
-            url: ["samples", "parent"],
+            url: "/api/v1/education/teachGrid",
             data: caller.searchView.getData(),
             callback: function (res) {
                 caller.gridView01.setData(res);
@@ -19,15 +19,16 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         return false;
     },
     PAGE_SAVE: function (caller, act, data) {
-        var saveList = [].concat(caller.gridView01.getData("modified"));
+        var saveList = [].concat(caller.gridView01.getData());
         saveList = saveList.concat(caller.gridView01.getData("deleted"));
+
         axboot.ajax({
             type: "PUT",
-            url: ["samples", "parent"],
+            url: "/api/v1/education/teachGrid",
             data: JSON.stringify(saveList),
             callback: function (res) {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-                axToast.push(LANG("ax.script.save"));
+                axToast.push("저장 되었습니다");
             }
         });
     },
@@ -39,6 +40,15 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     },
     ITEM_DEL: function (caller, act, data) {
         caller.gridView01.delRow("selected");
+    },
+    dispatch: function (caller, act, data) {
+        var result = ACTIONS.exec(caller, act, data);
+        if (result != "error") {
+            return result;
+        } else {
+            // 직접코딩
+            return false;
+        }
     }
 });
 
@@ -80,11 +90,17 @@ fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     initView: function () {
         this.target = $(document["searchView0"]);
         this.target.attr("onsubmit", "return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);");
-        this.filter = $("#filter");
+        this.company = $("#company");
+        this.ceo = $("#ceo");
+        this.bizno = $("#bizno");
     },
     getData: function () {
         return {
-            filter: this.filter.val()
+            pageNumber: this.pageNumber,
+            pageSize: this.pageSize,
+            company: this.company.val(),
+            ceo: this.ceo.val(),
+            bizno: this.bizno.val()
         }
     }
 });
@@ -103,12 +119,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             multipleSelect: true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-                {key: "key", label: "KEY", width: 160, align: "left", editor: "text"},
-                {key: "value", label: "VALUE", width: 350, align: "left", editor: "text"},
-                {key: "etc1", label: "ETC1", width: 100, align: "center", editor: "text"},
-                {key: "etc2", label: "ETC2", width: 100, align: "center", editor: "text"},
-                {key: "etc3", label: "ETC3", width: 100, align: "center", editor: "text"},
-                {key: "etc4", label: "ETC4", width: 100, align: "center", editor: "text"}
+                {key: "companyNm", label: COL("company.name"), width: 250, align: "left", editor: "text"},
+                {key: "ceo", label: COL("company.ceo"), width: 100, align: "center", editor: "text"},
+                {key: "bizno", label: COL("company.bizno"), width: 100, align: "center", editor: "text"},
+                {key: "tel", label: COL("company.tel"), width: 100, align: "center", editor: "text"},
+                {key: "email", label: COL("company.email"), width: 100, align: "center", editor: "text"},
+                {key: "useYn", label: COL("use.or.not"), align: "center", editor: "text"}
             ],
             body: {
                 onClick: function () {
@@ -132,8 +148,9 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
 
         if (_type == "modified" || _type == "deleted") {
             list = ax5.util.filter(_list, function () {
-                delete this.deleted;
-                return this.key;
+//                delete this.deleted;
+//                return this.key;
+                return this.id;
             });
         } else {
             list = _list;
