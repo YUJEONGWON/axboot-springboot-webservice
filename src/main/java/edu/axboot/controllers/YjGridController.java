@@ -10,8 +10,8 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import edu.axboot.domain.education.YjGrid;
-import edu.axboot.domain.education.YjGridService;
+import edu.axboot.domain.education.EducationYj;
+import edu.axboot.domain.education.EducationYjService;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
@@ -22,17 +22,24 @@ import java.util.List;
 public class YjGridController extends BaseController {
 
     @Inject
-    private YjGridService yjGridService;
+    private EducationYjService educationYjService;
 
     @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON)
-    public Responses.ListResponse list(RequestParams<YjGrid> requestParams) {
-        List<YjGrid> list = yjGridService.gets(requestParams);
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "companyNm", value = "회사명", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "ceo", value = "대표자", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "bizno", value = "사업자번호", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "useYn", value = "사용여부", dataType = "String", paramType = "query")
+
+    })
+    public Responses.ListResponse list(RequestParams<EducationYj> requestParams) {
+        List<EducationYj> list = educationYjService.gets(requestParams);
         return Responses.ListResponse.of(list);
     }
 
     @RequestMapping(method = {RequestMethod.PUT}, produces = APPLICATION_JSON)
-    public ApiResponse save(@RequestBody List<YjGrid> request) {
-        yjGridService.save(request);
+    public ApiResponse save(@RequestBody List<EducationYj> request) {
+        educationYjService.save(request);
         return ok();
     }
 
@@ -44,28 +51,28 @@ public class YjGridController extends BaseController {
             @ApiImplicitParam(name = "useYn", value = "사용여부", dataType = "String", paramType = "query")
 
     })
-    public Responses.ListResponse list1(RequestParams<YjGrid> requestParams) {
-        List<YjGrid> list = yjGridService.getByQueryDsl(requestParams);
+    public Responses.ListResponse list1(RequestParams<EducationYj> requestParams) {
+        List<EducationYj> list = educationYjService.getByQueryDsl(requestParams);
         return Responses.ListResponse.of(list);
     }
 
     @RequestMapping(value = "/queryDsl", method = {RequestMethod.PUT}, produces = APPLICATION_JSON)
-    public ApiResponse save1(@RequestBody List<YjGrid> request) {
-        yjGridService.saveByQueryDsl(request);
+    public ApiResponse save1(@RequestBody List<EducationYj> request) {
+        educationYjService.saveByQueryDsl(request);
         return ok();
     }
     @RequestMapping(value = "/queryDsl/one", method = {RequestMethod.GET}, produces = APPLICATION_JSON)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id", dataType = "Long", paramType = "query"),
     })
-    public YjGrid list2(@RequestParam("id") long id) {
-        YjGrid company =yjGridService.getOneByQureyDsl(id);
+    public EducationYj list2(@RequestParam("id") long id) {
+        EducationYj company = educationYjService.getOneByQureyDsl(id);
         return company;
     }
 
     @RequestMapping(value = "/queryDsl/one", method = {RequestMethod.PUT}, produces = APPLICATION_JSON)
-    public ApiResponse save2(@RequestBody YjGrid request) {
-        yjGridService.saveByQueryDsl(request);
+    public ApiResponse save2(@RequestBody EducationYj request) {
+        educationYjService.saveByQueryDsl(request);
         return ok();
     }
     @RequestMapping(value = "/myBatis",  method = {RequestMethod.GET}, produces = APPLICATION_JSON)
@@ -76,8 +83,8 @@ public class YjGridController extends BaseController {
             @ApiImplicitParam(name = "useYn", value = "사용여부", dataType = "String", paramType = "query")
 
     })
-    public Responses.ListResponse list3(RequestParams<YjGrid> requestParams) {
-        List<YjGrid> list = yjGridService.getByMyBatis(requestParams);
+    public Responses.ListResponse list3(RequestParams<EducationYj> requestParams) {
+        List<EducationYj> list = educationYjService.getByMyBatis(requestParams);
         return Responses.ListResponse.of(list);
     }
 

@@ -17,7 +17,7 @@ import javax.persistence.*;
 @DynamicUpdate
 @Entity
 @Table(name = "EDUCATION_YJ")
-public class YjGrid extends SimpleJpaModel<Long> {
+public class EducationYj extends SimpleJpaModel<Long> {
 
 	@Id
 	@Column(name = "ID", precision = 19, nullable = false)
