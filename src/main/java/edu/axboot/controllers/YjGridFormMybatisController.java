@@ -3,9 +3,13 @@ package edu.axboot.controllers;
 import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.api.response.Responses;
 import com.chequer.axboot.core.controllers.BaseController;
+import com.chequer.axboot.core.parameter.RequestParams;
 import com.sun.javafx.runtime.eula.Eula;
+import com.wordnik.swagger.annotations.ApiImplicitParam;
+import com.wordnik.swagger.annotations.ApiImplicitParams;
 import edu.axboot.domain.education.EducationYj;
 import edu.axboot.domain.education.EducationYjService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +32,8 @@ public class YjGridFormMybatisController extends BaseController {
         List<EducationYj> list = educationYjService.select(companyNm, ceo, bizno, useYn);
         return Responses.ListResponse.of(list);
     }
+
+
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = APPLICATION_JSON)
     public EducationYj view(@PathVariable Long id) {

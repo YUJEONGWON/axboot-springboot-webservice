@@ -49,7 +49,7 @@
     <select id="select" resultType="educationYj" parameterType="HashMap" statementType="PREPARED">
         SELECT
         ID AS id,
-        'mybatis : ' || COMPANY_NM AS companyNm,
+        COMPANY_NM AS companyNm,
         CEO AS ceo,
         BIZNO AS bizno,
         TEL AS tel,
@@ -68,7 +68,7 @@
                 AND CEO LIKE '%' || #{ceo} || '%'
             </if>
             <if test="bizno != null and bizno != ''">
-                AND CEO BIZNO LIKE '%' || #{bizno} || '%'
+                AND BIZNO LIKE '%' || #{bizno} || '%'
             </if>
             <if test="useYn != null and useYn != ''">
                 AND USE_YN = #{useYn}

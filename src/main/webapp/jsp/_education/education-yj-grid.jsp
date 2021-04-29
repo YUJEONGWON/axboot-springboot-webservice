@@ -30,6 +30,9 @@
                         <ax:td label='ax.base.company.bizno' width="300px">
                             <input type="text" name="bizno" id="bizno" class="form-control" />
                         </ax:td>
+                        <ax:td label='페이징 사용' width="200px">
+                            <input type="checkbox" class="js-isPage" />
+                        </ax:td>
 
                         <ax:td label='ax.base.use.or.not' width="300px ">
                             <select name="useYn" class="js-useYn form-control" >

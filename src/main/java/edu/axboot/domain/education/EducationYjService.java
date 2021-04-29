@@ -2,6 +2,9 @@ package edu.axboot.domain.education;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.sql.dml.SQLInsertClause;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import edu.axboot.domain.BaseService;
 import javax.inject.Inject;
@@ -24,7 +27,7 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         super(educationYjRepository);
         this.educationYjRepository = educationYjRepository;
     }
-/////////////////////////formcontrol//////////////////////////////////
+///////////////////////// form controller //////////////////////////////////
     public List<EducationYj> gets(String companyNm, String ceo,String bizno, String useYn){
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -97,7 +100,19 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         return result;
     }
 
-/////////////////////////////formcontroll myBatis//////////////////////////////////////////////////
+
+    public Page<EducationYj> getPage(RequestParams<EducationYj> requestParams){
+        List<EducationYj> list = this.gets(requestParams);
+        Pageable pageable = requestParams.getPageable();
+        //getOffset 에서 offset* pagenum 계산 해서 해당 페이지 start값 만들어 줌
+        int start = (int)pageable.getOffset();
+        int end = (start + pageable.getPageSize() > list.size() ? list.size() : (start + pageable.getPageSize()));
+        Page<EducationYj> pages = new PageImpl<>(list.subList(start, end), pageable, list.size());
+        return pages;
+
+    }
+
+/////////////////////////////form controller myBatis//////////////////////////////////
 
     public List<EducationYj> select(String companyNm, String ceo, String bizno, String useYn) {
         HashMap<String, String> params = new HashMap<String, String>();
@@ -127,9 +142,9 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         educationYjMapper.delete(id);
     }
 
+/////////////////////////////////YjGrid controller/////////////////////////////////////////
 
-
-    //////////////////////////////////////////////////////////////////
+    //QueryDsl//
     public List<EducationYj> gets(RequestParams<EducationYj> requestParams) {
 
 /*        String type = requestParams.getString("type","");
@@ -154,6 +169,8 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
 //        return findAll();
 //    }
+
+
 
     public List<EducationYj> getFilter(List<EducationYj> sources,String filter,int typ){
         List<EducationYj> targets =  new ArrayList<>();
@@ -252,29 +269,6 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         return company;
     }
 
-
-    public List<EducationYj> getByMyBatis(RequestParams<EducationYj> requestParams) {
-
-        EducationYj company = new EducationYj();
-        company.setCompanyNm(requestParams.getString("companyNm", ""));
-        company.setCeo(requestParams.getString("ceo", ""));
-        company.setBizno(requestParams.getString("bizno", ""));
-        company.setUseYn(requestParams.getString("useYn", ""));
-
-        List<EducationYj> companyList = this.educationYjMapper.selectBy(company);
-
-        return companyList;
-
-    }
-
-/*    public YjGrid selectOne(RequestParams<YjGrid> requestParams) {
-
-        return this.yjGridMapper.selectOne(requestParams.getLong("id",0));
-
-    }*/
-/////////////////////////////////////////////////////////////////////////////
-
-
     @Transactional
     public long saveByQueryDsl(List<EducationYj> request) {
         long result = 0 ;
@@ -308,6 +302,31 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
         return result;
     }
+
+//myBatis.//
+    public List<EducationYj> getByMyBatis(RequestParams<EducationYj> requestParams) {
+
+        EducationYj company = new EducationYj();
+        company.setCompanyNm(requestParams.getString("companyNm", ""));
+        company.setCeo(requestParams.getString("ceo", ""));
+        company.setBizno(requestParams.getString("bizno", ""));
+        company.setUseYn(requestParams.getString("useYn", ""));
+
+        List<EducationYj> companyList = this.educationYjMapper.selectBy(company);
+
+        return companyList;
+
+    }
+
+/*    public YjGrid selectOne(RequestParams<YjGrid> requestParams) {
+
+        return this.yjGridMapper.selectOne(requestParams.getLong("id",0));
+
+    }*/
+/////////////////////////////////////////////////////////////////////////////
+
+
+
 
 /*        public void saveByMyBatis(List<YjGrid> request) {
         for (YjGrid company: request) {
