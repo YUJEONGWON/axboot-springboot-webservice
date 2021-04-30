@@ -1,7 +1,8 @@
 package edu.axboot.domain.education;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.sql.dml.SQLInsertClause;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -17,17 +18,22 @@ import java.util.List;
 
 @Service
 public class EducationYjService extends BaseService<EducationYj, Long> {
+
+    private static final Logger logger = LoggerFactory.getLogger(EducationYjService.class);
+
     private EducationYjRepository educationYjRepository;
 
     @Inject
     private EducationYjMapper educationYjMapper;
+
+
 
     @Inject
     public EducationYjService(EducationYjRepository educationYjRepository) {
         super(educationYjRepository);
         this.educationYjRepository = educationYjRepository;
     }
-///////////////////////// form controller //////////////////////////////////
+///////////////////////// YJGridform controller //////////////////////////////////
     public List<EducationYj> gets(String companyNm, String ceo,String bizno, String useYn){
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -112,9 +118,15 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
     }
 
-/////////////////////////////form controller myBatis//////////////////////////////////
+/////////////////////////////YJGridform controller myBatis//////////////////////////////////
 
     public List<EducationYj> select(String companyNm, String ceo, String bizno, String useYn) {
+
+        if(!"".equals(useYn)&&!"Y".equals(useYn)&&!"N".equals(useYn)){
+            throw new RuntimeException("Y or N 입력해!!");
+        }
+
+
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("companyNm", companyNm);
         params.put("ceo", ceo);
@@ -204,16 +216,19 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         return targets;
     }
 
-    public List<EducationYj> getByQueryDsl(RequestParams<EducationYj> requestParams) {
+    public List<EducationYj> getListUsingQueryDsl(RequestParams<EducationYj> requestParams) {
 
 
         String companyNm = requestParams.getString("companyNm","");
         String ceo = requestParams.getString("ceo","");
         String bizno = requestParams.getString("bizno","");
         String useYn = requestParams.getString("useYn","");
+        logger.info("회사명 : "+companyNm);
+        logger.info("대표명 : "+ceo);
+        logger.info("사업자 번호 : "+bizno);
+        logger.info("사용여부 : "+useYn);
 
-
-        List<EducationYj> companyList = this.getByQueryDsl(companyNm, ceo, bizno,useYn);
+        List<EducationYj> companyList = this.getListUsingQueryDsl(companyNm, ceo, bizno,useYn);
 
         return companyList;
 
@@ -222,7 +237,7 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
 
 
-    public List<EducationYj> getByQueryDsl(String companyNm, String ceo, String bizno, String useYn) {
+    public List<EducationYj> getListUsingQueryDsl(String companyNm, String ceo, String bizno, String useYn) {
         //일단 실패하는 코드를 만들어라
 
 
@@ -255,7 +270,7 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
     }
 
-    public EducationYj getOneByQureyDsl(Long id){
+    public EducationYj getOneUsingQueryDsl(Long id){
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qEducationYj.id.eq(id));
@@ -311,6 +326,8 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         company.setCeo(requestParams.getString("ceo", ""));
         company.setBizno(requestParams.getString("bizno", ""));
         company.setUseYn(requestParams.getString("useYn", ""));
+
+
 
         List<EducationYj> companyList = this.educationYjMapper.selectBy(company);
 

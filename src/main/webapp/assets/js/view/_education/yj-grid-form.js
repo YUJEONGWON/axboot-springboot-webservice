@@ -2,8 +2,8 @@ var fnObj = {};
 var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SEARCH: function (caller, act, data) {
         axboot.ajax({
-            type: 'GET',
-            url: '/api/v1/education/yjGridForm',
+            type: "GET",
+            url: "/api/v1/education/yjGridForm",
             data: caller.searchView.getData(),
             callback: function (res) {
                 caller.gridView01.setData(res);
@@ -21,12 +21,12 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     PAGE_SAVE: function (caller, act, data) {
         var item = caller.formView01.getData();
         axboot.ajax({
-            type: 'POST',
-            url: '/api/v1/education/yjGridForm',
+            type: "POST",
+            url: "/api/v1/education/yjGridForm",
             data: JSON.stringify(item),
             callback: function (res) {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-                axToast.push('저장 되었습니다');
+                axToast.push("저장 되었습니다");
             },
         });
     },
@@ -35,11 +35,11 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         caller.gridView01.addRow();
     },
     ITEM_DEL: function (caller, act, data) {
-        caller.gridView01.delRow('selected');
+        caller.gridView01.delRow("selected");
     },
     dispatch: function (caller, act, data) {
         var result = ACTIONS.exec(caller, act, data);
-        if (result != 'error') {
+        if (result != "error") {
             return result;
         } else {
             // 직접코딩
@@ -50,7 +50,7 @@ var ACTIONS = axboot.actionExtend(fnObj, {
 
 // fnObj 기본 함수 스타트와 리사이즈
 fnObj.pageStart = function () {
-    console.log('init ......');
+    console.log("init ......");
     this.pageButtonView.initView();
     this.searchView.initView();
     this.gridView01.initView();
@@ -62,7 +62,7 @@ fnObj.pageResize = function () {};
 
 fnObj.pageButtonView = axboot.viewExtend({
     initView: function () {
-        axboot.buttonClick(this, 'data-page-btn', {
+        axboot.buttonClick(this, "data-page-btn", {
             search: function () {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
             },
@@ -80,9 +80,9 @@ fnObj.pageButtonView = axboot.viewExtend({
  */
 fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     initView: function () {
-        this.target = $(document['searchView0']);
-        this.target.attr('onsubmit', 'return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);');
-        this.filter = $('#filter');
+        this.target = $(document["searchView0"]);
+        this.target.attr("onsubmit", "return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);");
+        this.filter = $("#filter");
     },
     getData: function () {
         return {
@@ -109,10 +109,10 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             multipleSelect: true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-                { key: 'companyNm', label: COL('company.name'), width: 150, align: 'left' },
-                { key: 'ceo', label: COL('company.ceo'), width: 100, align: 'center' },
+                { key: "companyNm", label: COL("company.name"), width: 150, align: "left" },
+                { key: "ceo", label: COL("company.ceo"), width: 100, align: "center" },
 
-                { key: 'useYn', label: COL('use.or.not'), align: 'center' },
+                { key: "useYn", label: COL("use.or.not"), align: "center" },
             ],
             body: {
                 onClick: function () {
@@ -122,7 +122,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             },
         });
 
-        axboot.buttonClick(this, 'data-grid-view-01-btn', {
+        axboot.buttonClick(this, "data-grid-view-01-btn", {
             add: function () {
                 ACTIONS.dispatch(ACTIONS.ITEM_ADD);
             },
@@ -135,7 +135,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         var list = [];
         var _list = this.target.getList(_type);
 
-        if (_type == 'modified' || _type == 'deleted') {
+        if (_type == "modified" || _type == "deleted") {
             list = ax5.util.filter(_list, function () {
                 //                delete this.deleted;
                 //                return this.key;
@@ -147,21 +147,21 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         return list;
     },
     addRow: function () {
-        this.target.addRow({ __created__: true }, 'last');
+        this.target.addRow({ __created__: true }, "last");
     },
 });
 
 fnObj.formView01 = axboot.viewExtend(axboot.gridView, {
     getDefaultData: function () {
-        return { useYn: 'Y' };
+        return { useYn: "Y" };
     },
     getData: function () {
         var item = {};
-        this.target.find('input,select').each(function (i, elem) {
+        this.target.find("input,select").each(function (i, elem) {
             //var $elem = $(elem);
             var $elem = $(this);
-            var name = $elem.data('axPath');
-            var value = $elem.val() || '';
+            var name = $elem.data("axPath");
+            var value = $elem.val() || "";
             item[name] = value;
         });
         return item;
@@ -169,7 +169,7 @@ fnObj.formView01 = axboot.viewExtend(axboot.gridView, {
     setData: function (item) {
         var value;
         for (var prop in item) {
-            value = item[prop] || '';
+            value = item[prop] || "";
             $('[data-ax-path="' + prop + '"]').val(value);
         }
     },
@@ -177,7 +177,7 @@ fnObj.formView01 = axboot.viewExtend(axboot.gridView, {
     initView: function () {
         var _this = this; //fnObj.formview01
         //this 기본은 window이나 이 initview 안에서의 this를 formview로 하기위해
-        _this.target = $('.js-form');
+        _this.target = $(".js-form");
         // _this.model = new ax5.ui.binder();
         // _this.model.setModel({}, _this.target);
 

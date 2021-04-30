@@ -3,8 +3,11 @@ package edu.axboot.controllers;
 import com.chequer.axboot.core.api.response.Responses;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.chequer.axboot.core.parameter.RequestParams;
+import com.chequer.axboot.core.utils.DateUtils;
+import com.chequer.axboot.core.utils.ExcelUtils;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
+import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import com.chequer.axboot.core.api.response.ApiResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +18,9 @@ import edu.axboot.domain.education.EducationYjService;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -52,7 +58,7 @@ public class YjGridController extends BaseController {
 
     })
     public Responses.ListResponse list1(RequestParams<EducationYj> requestParams) {
-        List<EducationYj> list = educationYjService.getByQueryDsl(requestParams);
+        List<EducationYj> list = educationYjService.getListUsingQueryDsl(requestParams);
         return Responses.ListResponse.of(list);
     }
 
@@ -66,7 +72,7 @@ public class YjGridController extends BaseController {
             @ApiImplicitParam(name = "id", value = "id", dataType = "Long", paramType = "query"),
     })
     public EducationYj list2(@RequestParam("id") long id) {
-        EducationYj company = educationYjService.getOneByQureyDsl(id);
+        EducationYj company = educationYjService.getOneUsingQueryDsl(id);
         return company;
     }
 
@@ -84,10 +90,19 @@ public class YjGridController extends BaseController {
 
     })
     public Responses.ListResponse list3(RequestParams<EducationYj> requestParams) {
+
         List<EducationYj> list = educationYjService.getByMyBatis(requestParams);
         return Responses.ListResponse.of(list);
     }
 
+    @ApiOperation(value = "엑셀다운로드", notes = "/resources/excel/education_yj.xlsx")
+    @RequestMapping(value = "/excelDown", method = {RequestMethod.POST}, produces = APPLICATION_JSON)
+    public void excelDown(RequestParams<EducationYj> requestParams, HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        List<EducationYj> list = educationYjService.getListUsingQueryDsl(requestParams);
+        ExcelUtils.renderExcel("/excel/education_yj.xlsx", list,
+                "Education_" + DateUtils.getYyyyMMddHHmmssWithDate(), request, response);
+    }
 /*
     @RequestMapping(value = "/myBatis", method = {RequestMethod.PUT}, produces = APPLICATION_JSON)
     public ApiResponse save3(@RequestBody List<YjGrid> request) {

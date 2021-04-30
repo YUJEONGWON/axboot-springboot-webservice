@@ -4,17 +4,17 @@ var ACTIONS = axboot.actionExtend(fnObj, {
         var paramObj = (caller.searchView.getData(), data, { pageSize: 2 });
 
         var url;
-        if (caller.searchView.isPage.is(':checked')) {
-            url = '/api/v1/education/yjGridForm/pages';
+        if (caller.searchView.isPage.is(":checked")) {
+            url = "/api/v1/education/yjGridForm/pages";
         } else {
-            url = '/api/v1/education/yjGridForm';
+            url = "/api/v1/education/yjGridForm";
         }
 
         //값이 false면 ''로 대신, type이라는 변수가 없으면 알아서 생성
-        paramObj.type = fnObj.type || '';
+        paramObj.type = fnObj.type || "";
 
         axboot.ajax({
-            type: 'GET',
+            type: "GET",
             // url: "/api/v1/education/yjgrid/queryDsl",
             // url: '/api/v1/education/yjgrid/myBatis',
             // data: caller.searchView.getData(),
@@ -36,33 +36,40 @@ var ACTIONS = axboot.actionExtend(fnObj, {
     },
     PAGE_SAVE: function (caller, act, data) {
         var saveList = [].concat(caller.gridView01.getData());
-        saveList = saveList.concat(caller.gridView01.getData('deleted'));
+        saveList = saveList.concat(caller.gridView01.getData("deleted"));
 
         axboot.ajax({
-            type: 'PUT',
-            url: '/api/v1/education/yjgrid/queryDsl',
+            type: "PUT",
+            url: "/api/v1/education/yjgrid/queryDsl",
             data: JSON.stringify(saveList),
             callback: function (res) {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
-                axToast.push('저장 되었습니다');
+                axToast.push("저장 되었습니다");
             },
         });
     },
+
     ITEM_CLICK: function (caller, act, data) {},
     ITEM_ADD: function (caller, act, data) {
         caller.gridView01.addRow();
     },
     ITEM_DEL: function (caller, act, data) {
-        caller.gridView01.delRow('selected');
+        caller.gridView01.delRow("selected");
     },
     dispatch: function (caller, act, data) {
         var result = ACTIONS.exec(caller, act, data);
-        if (result != 'error') {
+        if (result != "error") {
             return result;
         } else {
             // 직접코딩
             return false;
         }
+    },
+    EXCEL_DOWN: function (caller, act, data) {
+        let frm = document["excelForm"];
+        frm.action = "/api/v1/education/yjgrid/excelDown";
+        // frm.parentKey.value=fnObj.gridView01.pKey;
+        frm.submit();
     },
 });
 
@@ -79,7 +86,7 @@ fnObj.pageResize = function () {};
 
 fnObj.pageButtonView = axboot.viewExtend({
     initView: function () {
-        axboot.buttonClick(this, 'data-page-btn', {
+        axboot.buttonClick(this, "data-page-btn", {
             searchPage: function () {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
             },
@@ -89,7 +96,9 @@ fnObj.pageButtonView = axboot.viewExtend({
             save: function () {
                 ACTIONS.dispatch(ACTIONS.PAGE_SAVE);
             },
-            excel: function () {},
+            excel: function () {
+                ACTIONS.dispatch(ACTIONS.EXCEL_DOWN);
+            },
         });
     },
 });
@@ -100,21 +109,21 @@ fnObj.pageButtonView = axboot.viewExtend({
  */
 fnObj.searchView = axboot.viewExtend(axboot.searchView, {
     initView: function () {
-        this.target = $(document['searchView0']);
-        this.target.attr('onsubmit', 'return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);');
-        this.target.on('keydown.search', 'input, .form-control', function (e) {
+        this.target = $(document["searchView0"]);
+        this.target.attr("onsubmit", "return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);");
+        this.target.on("keydown.search", "input, .form-control", function (e) {
             if (e.keyCode === 13) {
                 ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);
             }
         });
 
-        this.target.attr('onsubmit', 'return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);');
-        this.companyNm = $('#companyNm');
-        this.ceo = $('#ceo');
-        this.bizno = $('#bizno');
-        this.useYn = $('.js-useYn');
+        this.target.attr("onsubmit", "return ACTIONS.dispatch(ACTIONS.PAGE_SEARCH);");
+        this.companyNm = $("#companyNm");
+        this.ceo = $("#ceo");
+        this.bizno = $("#bizno");
+        this.useYn = $(".js-useYn");
 
-        this.isPage = $('.js-isPage');
+        this.isPage = $(".js-isPage");
     },
     getData: function () {
         return {
@@ -145,12 +154,12 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             multipleSelect: true,
             target: $('[data-ax5grid="grid-view-01"]'),
             columns: [
-                { key: 'companyNm', label: COL('company.name'), width: 350, align: 'left', editor: 'text' },
-                { key: 'ceo', label: COL('company.ceo'), width: 100, align: 'center', editor: 'text' },
-                { key: 'bizno', label: COL('company.bizno'), width: 100, align: 'center', editor: 'text' },
-                { key: 'tel', label: COL('company.tel'), width: 100, align: 'center', editor: 'text' },
-                { key: 'email', label: COL('company.email'), width: 100, align: 'center', editor: 'text' },
-                { key: 'useYn', label: COL('use.or.not'), width: 100, align: 'center', editor: 'text' },
+                { key: "companyNm", label: COL("company.name"), width: 350, align: "left", editor: "text" },
+                { key: "ceo", label: COL("company.ceo"), width: 100, align: "center", editor: "text" },
+                { key: "bizno", label: COL("company.bizno"), width: 100, align: "center", editor: "text" },
+                { key: "tel", label: COL("company.tel"), width: 100, align: "center", editor: "text" },
+                { key: "email", label: COL("company.email"), width: 100, align: "center", editor: "text" },
+                { key: "useYn", label: COL("use.or.not"), width: 100, align: "center", editor: "text" },
             ],
             body: {
                 onClick: function () {
@@ -159,7 +168,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
             },
         });
 
-        axboot.buttonClick(this, 'data-grid-view-01-btn', {
+        axboot.buttonClick(this, "data-grid-view-01-btn", {
             add: function () {
                 ACTIONS.dispatch(ACTIONS.ITEM_ADD);
             },
@@ -172,7 +181,7 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         var list = [];
         var _list = this.target.getList(_type);
 
-        if (_type == 'modified' || _type == 'deleted') {
+        if (_type == "modified" || _type == "deleted") {
             list = ax5.util.filter(_list, function () {
                 //                delete this.deleted;
                 //                return this.key;
@@ -184,6 +193,6 @@ fnObj.gridView01 = axboot.viewExtend(axboot.gridView, {
         return list;
     },
     addRow: function () {
-        this.target.addRow({ __created__: true }, 'last');
+        this.target.addRow({ __created__: true }, "last");
     },
 });

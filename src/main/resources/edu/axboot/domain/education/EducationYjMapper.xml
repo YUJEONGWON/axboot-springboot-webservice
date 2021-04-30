@@ -68,7 +68,7 @@
                 AND CEO LIKE '%' || #{ceo} || '%'
             </if>
             <if test="bizno != null and bizno != ''">
-                AND BIZNO LIKE '%' || #{bizno} || '%'
+                AND BIZNO  '%' || #{bizno} || '%'
             </if>
             <if test="useYn != null and useYn != ''">
                 AND USE_YN = #{useYn}

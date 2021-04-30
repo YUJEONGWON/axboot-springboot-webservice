@@ -9,7 +9,10 @@ import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
 import edu.axboot.domain.education.EducationYj;
 import edu.axboot.domain.education.EducationYjService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +22,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/api/v1/education/yjGridForm/mybatis")
 public class YjGridFormMybatisController extends BaseController {
-
+    private static final Logger logger = LoggerFactory.getLogger(EducationYjService.class);
     @Inject
     private EducationYjService educationYjService;
 
@@ -29,8 +32,19 @@ public class YjGridFormMybatisController extends BaseController {
                                        @RequestParam(value = "ceo", required = false) String ceo,
                                        @RequestParam(value = "bizno", required = false) String bizno,
                                        @RequestParam(value = "useYn", required = false) String useYn) {
-        List<EducationYj> list = educationYjService.select(companyNm, ceo, bizno, useYn);
-        return Responses.ListResponse.of(list);
+        try {
+            List<EducationYj> list = educationYjService.select(companyNm,ceo,bizno,useYn);
+            return Responses.ListResponse.of(list);
+        }catch (BadSqlGrammarException e) {
+            logger.error("마이바티스 조회 오류. 쿼리 확인해 보세요~");
+            return Responses.ListResponse.of(null);
+        }
+        catch(RuntimeException e){
+            logger.error(e.getMessage());
+            return Responses.ListResponse.of(null);
+
+        }
+
     }
 
 
