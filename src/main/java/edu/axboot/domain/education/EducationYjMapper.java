@@ -5,7 +5,8 @@ import com.chequer.axboot.core.mybatis.MyBatisMapper;
 import java.util.HashMap;
 import java.util.List;
 
-public interface EducationYjMapper extends MyBatisMapper {
+public interface EducationYjMapper
+{
 
     List<EducationYj> selectBy(EducationYj educationYj);
     List<EducationYj> select(HashMap<String, String> params);

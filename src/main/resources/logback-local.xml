@@ -24,7 +24,7 @@
     </appender>
 
 <!--    젤 하위 수준-->
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="ROLLING" />
     </root>
