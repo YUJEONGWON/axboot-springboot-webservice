@@ -4,21 +4,16 @@ import com.chequer.axboot.core.api.response.ApiResponse;
 import com.chequer.axboot.core.api.response.Responses;
 import com.chequer.axboot.core.controllers.BaseController;
 import com.chequer.axboot.core.parameter.RequestParams;
-import com.chequer.axboot.core.utils.DateUtils;
-import com.chequer.axboot.core.utils.ExcelUtils;
 import com.wordnik.swagger.annotations.ApiImplicitParam;
 import com.wordnik.swagger.annotations.ApiImplicitParams;
-import com.wordnik.swagger.annotations.ApiOperation;
 import edu.axboot.domain.education.EducationYj;
 import edu.axboot.domain.education.EducationYjService;
+import edu.axboot.utils.MiscUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -28,6 +23,7 @@ public class YjGridFormController extends BaseController {
     @Inject
     private EducationYjService educationYjService;
 
+/*
 
     @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON)
     public Responses.ListResponse list(@RequestParam(value = "companyNm",defaultValue="",required = false) String companyNm,
@@ -38,26 +34,28 @@ public class YjGridFormController extends BaseController {
         List<EducationYj> list = educationYjService.gets(companyNm,ceo,bizno,useYn);
         return Responses.ListResponse.of(list);
     }
+*/
 
-    @ApiImplicitParams({
+/*    @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNumber", value = "페이지번호(0부터시작)", required = true, dataType = "integer", paramType = "query", defaultValue = "0"),
             @ApiImplicitParam(name = "pageSize", value = "페이지크기", required = true, dataType = "integer", paramType = "query", defaultValue = "50"),
             @ApiImplicitParam(name = "companyNm", value = "회사명", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "ceo", value = "대표자", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "bizno", value = "사업자번호", dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "useYn", value = "사용유무", dataType = "String", paramType = "query")
-    })
+    })*/
     @RequestMapping(value = "/pages", method = RequestMethod.GET, produces = APPLICATION_JSON)
     public Responses.PageResponse pages(RequestParams<EducationYj> requestParams) {
-        Page<EducationYj> pages = educationYjService.getPage(requestParams);
-        return Responses.PageResponse.of(pages);
+        List<EducationYj> list = educationYjService.getsform(requestParams);
+        Page<EducationYj> page = MiscUtils.toPage(list, requestParams.getPageable());
+        return Responses.PageResponse.of(page);
+
     }
-
-
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = APPLICATION_JSON)
     public EducationYj view(@PathVariable Long id){
-        return educationYjService.getByOne(id);
+        EducationYj entity = educationYjService.getByOne(id);
+        return entity;
 
     }
 
@@ -68,11 +66,17 @@ public class YjGridFormController extends BaseController {
         return ok();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = APPLICATION_JSON)
-    public ApiResponse delete(@PathVariable Long id){
-        educationYjService.remove(id);
+    @RequestMapping(method = RequestMethod.DELETE, produces = APPLICATION_JSON)
+    public ApiResponse delete(@RequestParam List<Long> ids){
+        educationYjService.deleteUsingQueryDsl(ids);
         return ok();
     }
+
+//    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = APPLICATION_JSON)
+//    public ApiResponse delete(@PathVariable Long id){
+//        educationYjService.deleteUsingQueryDsl(id);
+//        return ok();
+//    }
 
 
 

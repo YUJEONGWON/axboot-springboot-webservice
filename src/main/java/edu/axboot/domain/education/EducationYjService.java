@@ -23,7 +23,7 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
     private EducationYjRepository educationYjRepository;
 
-    //@Inject
+    @Inject
     private EducationYjMapper educationYjMapper;
 
 
@@ -33,8 +33,26 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         super(educationYjRepository);
         this.educationYjRepository = educationYjRepository;
     }
+
+
 ///////////////////////// YJGridform controller //////////////////////////////////
-    public List<EducationYj> gets(String companyNm, String ceo,String bizno, String useYn){
+
+   //getListUsingQueryDSL
+    public List<EducationYj> getsform(RequestParams<EducationYj> requestParams){
+
+        String companyNm = requestParams.getString("companyNm", "");
+        String ceo = requestParams.getString("ceo", "");
+        String bizno = requestParams.getString("bizno", "");
+        String useYn = requestParams.getString("useYn", "");
+        String filter = requestParams.getFilter();
+
+        logger.info("회사명 : " + companyNm);
+        logger.info("대표자 : " + ceo);
+        logger.info("사업자번호 : " + bizno);
+        logger.info("사용여부 : " + useYn);
+        logger.info("검색 : " + filter);
+
+
         BooleanBuilder builder = new BooleanBuilder();
 
         if(isNotEmpty(companyNm)){
@@ -50,6 +68,12 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
             builder.and(qEducationYj.useYn.eq(useYn));
         }
 
+        if (isNotEmpty(filter)) {
+            builder.and(qEducationYj.companyNm.contains(filter)
+                    .or(qEducationYj.ceo.like("%" + filter + "%"))
+                    .or(qEducationYj.bizno.like(filter + "%"))
+            );
+        }
         List<EducationYj> companyList = select()
                 .from(qEducationYj)
                 .where(builder)
@@ -71,10 +95,12 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
                 .fetchOne();
         return company;
     }
+
+    //saveUsingQueryDSL
     @Transactional
     public Long persist(EducationYj educationYj){
         long result =0 ;
-        if(educationYj.getId()==0||educationYj.getId()==null){
+        if(educationYj.getId()==null || educationYj.getId()==0){
             EducationYj rtnObj = save(educationYj); //JPA사용
             result = rtnObj.getId();
         }else{
@@ -96,8 +122,19 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         return result;
 
     }
+
+
+    //deleteUsingQueryDsl
     @Transactional
-    public Long remove(Long id){
+    public void deleteUsingQueryDsl(List<Long> ids) {
+        for (Long id : ids) {
+            deleteUsingQueryDsl(id);
+        }
+    }
+
+
+    @Transactional
+    public Long deleteUsingQueryDsl(Long id){
 
         long result=0;
         result = delete(qEducationYj)
@@ -118,7 +155,7 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
 
     }
 
-/////////////////////////////YJGridform controller myBatis//////////////////////////////////
+//+YJGridform controller myBatis//////////////////////////////////
 
     public List<EducationYj> select(String companyNm, String ceo, String bizno, String useYn) {
 
@@ -153,6 +190,7 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
     public void del(Long id) {
         educationYjMapper.delete(id);
     }
+
 
 /////////////////////////////////YjGrid controller/////////////////////////////////////////
 
@@ -269,6 +307,49 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
         return companyList;
 
     }
+    public List<EducationYj> getListUsingQueryDslPages(RequestParams<EducationYj> requestParams) {
+        String companyNm = requestParams.getString("companyNm", "");
+        String ceo = requestParams.getString("ceo", "");
+        String bizno = requestParams.getString("bizno", "");
+        String useYn = requestParams.getString("useYn", "");
+        String filter = requestParams.getFilter();
+
+        logger.info("회사명 : " + companyNm);
+        logger.info("대표자 : " + ceo);
+        logger.info("사업자번호 : " + bizno);
+        logger.info("사용여부 : " + useYn);
+        logger.info("검색 : " + filter);
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (isNotEmpty(companyNm)) {
+            builder.and(qEducationYj.companyNm.contains(companyNm));
+        }
+        if (isNotEmpty(ceo)) {
+            builder.and(qEducationYj.ceo.like("%" + ceo +"%"));
+        }
+        if (isNotEmpty(bizno)) {
+            builder.and(qEducationYj.bizno.like(bizno + "%"));
+        }
+        if (isNotEmpty(useYn)) {
+            builder.and(qEducationYj.useYn.eq(useYn));
+        }
+
+        if (isNotEmpty(filter)) {
+            builder.and(qEducationYj.companyNm.contains(filter)
+                    .or(qEducationYj.ceo.like("%" + filter + "%"))
+                    .or(qEducationYj.bizno.like(filter + "%"))
+            );
+        }
+
+        List<EducationYj> list = select()
+                .from(qEducationYj)
+                .where(builder)
+                .orderBy(qEducationYj.companyNm.asc())
+                .fetch();
+
+        return list;
+    }
 
     public EducationYj getOneUsingQueryDsl(Long id){
 
@@ -285,16 +366,16 @@ public class EducationYjService extends BaseService<EducationYj, Long> {
     }
 
     @Transactional
-    public long saveByQueryDsl(List<EducationYj> request) {
+    public long saveUsingQueryDsl(List<EducationYj> request) {
         long result = 0 ;
         for (EducationYj company: request) {
-            result = saveByQueryDsl(company);
+            result = saveUsingQueryDsl(company);
         }
         return result;
     }
 
     @Transactional
-    public long saveByQueryDsl(EducationYj company) {
+    public long saveUsingQueryDsl(EducationYj company) {
         long result =0 ;
 
         if (company.isCreated()) {

@@ -10,7 +10,7 @@
     <jsp:attribute name="script">
         <ax:script-lang key="ax.script" var="LANG" />
         <ax:script-lang key="ax.base" var="COL" />
-        <script type="text/javascript" src="<c:url value='/assets/js/view/_education/education-yj-grid.js' />"></script>
+        <script type="text/javascript" src="<c:url value='/assets/js/view/_education/yj-grid-modal.js' />"></script>
     </jsp:attribute>
     <jsp:body>
 
@@ -21,21 +21,17 @@
             <ax:form name="searchView0">
                 <ax:tbl clazz="ax-search-tbl" minWidth="500px">
                     <ax:tr>
-                        <ax:td label='ax.base.company.name' width="300px">
-                            <input type="text" name="companyNm" id="companyNm" class="form-control" />
+                        <ax:td label='ax.base.company.name' width="200px">
+                            <input type="text" name="companyNm" class="js-companyNm form-control" />
                         </ax:td>
-                        <ax:td label='ax.base.company.ceo' width="300px">
-                            <input type="text" name="ceo" id="ceo" class="form-control" />
+                        <ax:td label='ax.base.company.ceo' width="200px">
+                            <input type="text" name="ceo" class="js-ceo form-control" />
                         </ax:td>
-                        <ax:td label='ax.base.company.bizno' width="300px">
-                            <input type="text" name="bizno" id="bizno" class="form-control" />
+                        <ax:td label='ax.base.company.bizno' width="200px">
+                            <input type="text" name="bizno" class="js-bizno form-control" />
                         </ax:td>
-                        <ax:td label='ax.base.use.or.not' width="300px ">
-                            <select name="useYn" class="js-useYn form-control" >
-                                <option value="">전체</option>
-                                <option value="Y">사용</option>
-                                <option value="N">미사용</option>
-                            </select>
+                        <ax:td label='ax.base.use.or.not' width="360px">
+                            <ax:common-code groupCd="USE_YN" clazz="js-useYn" emptyText="전체" />
                         </ax:td>
                     </ax:tr>
                 </ax:tbl>
@@ -49,16 +45,17 @@
                 <!-- 목록 -->
                 <div class="ax-button-group" data-fit-height-aside="grid-view-01">
                     <div class="left">
-                        <h2><i class="cqc-list"></i>                            프로그램 목록 </h2>
+                        <h2><i class="cqc-list"></i>
+                            프로그램 목록 </h2>
                     </div>
                     <div class="right">
-                        <button type="button" class="btn btn-default" data-grid-view-01-btn="add"><i class="cqc-circle-with-plus"></i> 추가</button>
-                        <button type="button" class="btn btn-default" data-grid-view-01-btn="delete"><i class="cqc-circle-with-plus"></i> 삭제</button>
+                        <button type="button" class="btn btn-default" data-grid-view-01-btn="create">
+                            <i class="cqc-erase"></i> 등록
+                        </button>
                     </div>
                 </div>
                 <div data-ax5grid="grid-view-01" data-fit-height-content="grid-view-01" style="height: 300px;"></div>
-                <form name="excelForm" method="post">                        
-                </form>
+
             </ax:split-panel>
         </ax:split-layout>
 

@@ -2,6 +2,7 @@ package edu.axboot.domain;
 
 import edu.axboot.domain.code.QCommonCode;
 
+import edu.axboot.domain.education.QEducationTeach;
 import edu.axboot.domain.education.QEducationYj;
 import edu.axboot.domain.education.book.QEducationBook;
 import edu.axboot.domain.file.QCommonFile;
@@ -30,6 +31,9 @@ public class BaseService<T, ID extends Serializable> extends AXBootBaseService<T
     protected QCommonFile qCommonFile = QCommonFile.commonFile;
     protected QEducationYj qEducationYj = QEducationYj.educationYj;
     protected QEducationBook qEducationBook = QEducationBook.educationBook;
+
+    protected QEducationTeach qEducationTeach = QEducationTeach.educationTeach;
+
     protected AXBootJPAQueryDSLRepository<T, ID> repository;
 
     public BaseService() {

@@ -4,28 +4,28 @@ module.exports = {
     useTabs: false,
     singleQuote: false,
     semi: true,
-    arrowParens: 'avoid',
-    trailingComma: 'es5',
+    arrowParens: "avoid",
+    trailingComma: "es5",
     bracketSpacing: true,
-    endOfLine: 'lf',
+    endOfLine: "lf",
     overrides: [
         {
-            files: ['*.html', '*.hbs'],
+            files: ["*.html", "*.hbs"],
             options: {
-                proseWrap: 'preserve',
+                proseWrap: "preserve",
                 printWidth: 250,
                 singleQuote: false,
             },
         },
         {
-            files: ['*.css', '*.sass', '*.scss', '*.less', '*.svg'],
+            files: ["*.css", "*.sass", "*.scss", "*.less", "*.svg"],
             options: {
                 singleQuote: false,
                 tabWidth: 2,
             },
         },
         {
-            files: '*.json',
+            files: "*.json",
             options: {
                 singleQuote: false,
                 printWidth: 400,
